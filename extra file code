@@ -1,0 +1,33 @@
+import Foundation
+import SwiftUI
+import Combine
+
+struct Task : Identifiable {
+    var id = String()
+    var toDoitem = String()
+    var isDeleted = false
+}
+
+class TaskStore : ObservableObject {
+    @Published var tasks = [Task]()
+    
+    var activeTasks: [Task] {
+        tasks.filter { !$0.isDeleted }
+    }
+    func deleteTask(at offsets: IndexSet) {
+           for index in offsets {
+               tasks[index].isDeleted = true
+           }
+       }
+    
+    func restoreTask(_ task: Task) {
+            if let index = tasks.firstIndex(where: { $0.id == task.id }) {
+                tasks[index].isDeleted = false
+            }
+        }
+        
+        func permanentlyDeleteTask(at offsets: IndexSet) {
+            tasks.remove(atOffsets: offsets)
+        }
+}
+
